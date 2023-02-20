@@ -1,23 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getPhotos,
+  decrement,
+  increment,
+  getPhotosBasedOnPages,
+} from "./GalleryState";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useDispatch();
+  const photos = useSelector((state) => state.gallery.photos);
+  const num = useSelector((state) => state.gallery.pages);
+
+  const handleIncrement = () => {
+    dispatch(increment());
+    dispatch(getPhotosBasedOnPages());
+  };
+
+  const handleDecrement = () => {
+    dispatch(decrement());
+    dispatch(getPhotosBasedOnPages());
+  };
+
+  useEffect(() => {
+    dispatch(getPhotos());
+  }, [dispatch]);
+  console.log(photos);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Photo Gallery</h1>
+      <button onClick={handleIncrement}>next page</button>
+      <button onClick={handleDecrement}>previous page</button>
+      <p> page number {num}</p>
+      <hr />
+      <div>
+        {photos.map((photo) => (
+          <img
+            key={photo.id}
+            alt={photo.author}
+            src={photo.download_url}
+            width="400"
+            height="400"
+          />
+        ))}
+      </div>
+      <button onClick={handleIncrement}>next page</button>
+      <button onClick={handleDecrement}>previous page</button>
+      <p> page number {num}</p>
     </div>
   );
 }
